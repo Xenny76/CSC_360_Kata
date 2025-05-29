@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="CSC160_Final.MainPage"
+             xmlns:local="clr-namespace:CSC160_Final">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <local:BoolToColorConverter x:Key="BoolToColorConverter"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <Grid RowDefinitions="*, 9*">
+        <HorizontalStackLayout HorizontalOptions="Center" VerticalOptions="Start" Spacing="10">
+            <Stepper x:Name="HeightStepper" Minimum="10" Maximum="100" Value="10" ValueChanged="HeightChange"></Stepper>
+            <Label x:Name="HeightLabel" Text="{Binding Value, Source={x:Reference HeightStepper}}" FontSize="22"></Label>
+            <Stepper x:Name="WidthStepper" Minimum="10" Maximum="100" Value="10" Grid.Column="4" ValueChanged="WidthChange"></Stepper>
+            <Label x:Name="WidthLabel" Text="{Binding Value, Source={x:Reference WidthStepper}}" FontSize="22"></Label>
+            <Button Text="Randomize" Clicked="RandomizeCells"></Button>
+            <Entry x:Name="RandomPercent" Placeholder="Percentage Alive As Decimal" Keyboard="Numeric"></Entry>
+            <Button Text="Advance One" Clicked="AdvanceOne"></Button>
+            <Button Text="Play" Clicked="OnPausePlayClicked" />
+        </HorizontalStackLayout>
+        <ScrollView Grid.Row="1" Orientation="Both">
+            <Grid x:Name="GameGrid" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"
+                  RowDefinitions="*, *, *, *, *, *, *, *, *, *" ColumnDefinitions="*, *, *, *, *, *, *, *, *, *"></Grid>
+        </ScrollView>
+    </Grid>
+</ContentPage>
