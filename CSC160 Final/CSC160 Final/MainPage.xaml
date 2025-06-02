@@ -18,6 +18,16 @@
             <Entry x:Name="RandomPercent" Placeholder="Percentage Alive As Decimal" Keyboard="Numeric"></Entry>
             <Button Text="Advance One" Clicked="AdvanceOne"></Button>
             <Button Text="Play" Clicked="OnPausePlayClicked" />
+            <Picker
+                x:Name="RulePicker"
+                Title="Choose Rule"
+                SelectedIndexChanged="RulePicker_SelectedIndexChanged">
+                <Picker.Items>
+                    <x:String>Conway’s Game of Life</x:String>
+                    <x:String>HighLife</x:String>
+                    <x:String>Day and Night</x:String>
+                </Picker.Items>
+            </Picker>
         </HorizontalStackLayout>
         <ScrollView Grid.Row="1" Orientation="Both">
             <Grid x:Name="GameGrid" Grid.Row="1" HorizontalOptions="Center" VerticalOptions="Center"

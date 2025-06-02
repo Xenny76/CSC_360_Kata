@@ -1,13 +1,15 @@
 ﻿using System.Text;
 using System.Threading;
+using Microsoft.Maui.Storage;
 
 namespace CSC160_Final
 {
     public partial class MainPage : ContentPage
     {
-        private List<List<Cell>> cells = new();
+        private List<List<Cell>> cells = [];
         private bool running = false;
         private CancellationTokenSource? cancellationTokenSource = null;
+        private CellUpdateContext cellUpdateContext = new();
         public MainPage()
         {
             InitializeComponent();
@@ -44,10 +46,10 @@ namespace CSC160_Final
         {
             for (int i = 0; i < GameGrid.RowDefinitions.Count; i++)
             {
-                cells.Add(new List<Cell>());
+                cells.Add([]);
                 for (int j = 0; j < GameGrid.ColumnDefinitions.Count; j++)
                 {
-                    Cell cell = new Cell();
+                    Cell cell = new();
                     Button c = new()
                     {
                         AutomationId = $"Cell{i}_{j}",
@@ -75,10 +77,10 @@ namespace CSC160_Final
         {
             // Get to the last row and populate all grid cells
             int i = GameGrid.RowDefinitions.Count - 1;
-            cells.Add(new List<Cell>());
+            cells.Add([]);
             for (int j = 0; j < GameGrid.ColumnDefinitions.Count; j++)
             {
-                Cell cell = new Cell();
+                Cell cell = new();
                 Button c = new()
                 {
                     AutomationId = $"Cell{i}_{j}",
@@ -117,7 +119,7 @@ namespace CSC160_Final
             int j = GameGrid.ColumnDefinitions.Count - 1;
             for (int i = 0; i < GameGrid.RowDefinitions.Count; i++)
             {
-                Cell cell = new Cell();
+                Cell cell = new();
                 Button c = new()
                 {
                     AutomationId = $"Cell{i}_{j}",
@@ -152,7 +154,7 @@ namespace CSC160_Final
         }
         private void RandomizeCells(object sender, EventArgs e)
         {
-            Random r = new Random();
+            Random r = new();
             foreach (List<Cell> row in cells)
             {
                 foreach (Cell cell in row)
@@ -166,44 +168,12 @@ namespace CSC160_Final
         }
         private void Advance()
         {
-            List<List<bool>> copy = new();
-            foreach (List<Cell> row in cells)
-            {
-                List<bool> rowCopy = new();
-                foreach (Cell cell in row)
-                {
-                    rowCopy.Add(cell.IsAlive);
-                }
-                copy.Add(rowCopy);
-            }
-            foreach (List<Cell> row in cells)
-            {
-                foreach (Cell cell in row)
-                {
-                    byte amountAlive = AmountAlive(cell, copy);
-                    if (amountAlive < 2 || amountAlive > 3) cell.IsAlive = false;
-                    else if (amountAlive == 3 && !cell.IsAlive) cell.IsAlive = true;
-                }
-            }
+            cellUpdateContext.Advance(cells, GameGrid);
         }
         private void AdvanceOne(object sender, EventArgs e)
         {
             Advance();
         }
-        private byte AmountAlive(Cell c, List<List<bool>> copy)
-        {
-            byte count = 0;
-            if (c.Row != 0 && c.Column != 0 && copy[c.Row - 1][c.Column - 1]) count++; // Top Left
-            if (c.Row != 0 && copy[c.Row - 1][c.Column]) count++; // Top
-            if (c.Row != 0 && c.Column != GameGrid.ColumnDefinitions.Count - 1 && copy[c.Row - 1][c.Column + 1]) count++; // Top Right
-            if (c.Column != GameGrid.ColumnDefinitions.Count - 1 && copy[c.Row][c.Column + 1]) count++; // Right
-            if (c.Row != GameGrid.RowDefinitions.Count - 1 && c.Column != GameGrid.ColumnDefinitions.Count - 1 && copy[c.Row + 1][c.Column + 1]) count++; // Bottom Right
-            if (c.Row != GameGrid.RowDefinitions.Count - 1 && copy[c.Row + 1][c.Column]) count++; // Bottom
-            if (c.Row != GameGrid.RowDefinitions.Count - 1 && c.Column != 0 && copy[c.Row + 1][c.Column - 1]) count++; // Bottom Left
-            if (c.Column != 0 && copy[c.Row][c.Column - 1]) count++; // Left
-            return count;
-        }
-
         [Obsolete]
         private void OnPausePlayClicked(object sender, EventArgs e)
         {
@@ -225,6 +195,16 @@ namespace CSC160_Final
                     return true;
                 });
             }
+        }
+        private void RulePicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            cellUpdateContext.UpdateStrategy = RulePicker.SelectedIndex switch
+            {
+                0 => new ConwayUpdateStrategy(),
+                1 => new HighLifeUpdateStrategy(),
+                2 => new DayAndNightUpdateStrategy(),
+                _ => new ConwayUpdateStrategy(),
+            };
         }
     }
 }
