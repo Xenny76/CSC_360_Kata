@@ -1,4 +1,5 @@
-﻿namespace CSC160_Final.CellUpdateStrategies
+﻿using CSC160_Final.Interfaces;
+namespace CSC160_Final.CellUpdateStrategies
 {
     public class ConwayUpdateStrategy : ICellUpdateStrategy
     {

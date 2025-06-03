@@ -8,6 +8,7 @@ namespace CSC160_Final
         private bool running = false;
         private CancellationTokenSource? cancellationTokenSource = null;
         private readonly CellUpdateContext cellUpdateContext = new();
+        private readonly CellUpdateStrategyFactory cellUpdateStrategyFactory = new();
         public void PopulateGrid()
         {
             for (int i = 0; i < GameGrid.RowDefinitions.Count; i++)
@@ -194,13 +195,7 @@ namespace CSC160_Final
 
         public void ChangeRuleset(Picker RulePicker)
         {
-            cellUpdateContext.UpdateStrategy = RulePicker.SelectedIndex switch
-            {
-                0 => new ConwayUpdateStrategy(),
-                1 => new HighLifeUpdateStrategy(),
-                2 => new DayAndNightUpdateStrategy(),
-                _ => new ConwayUpdateStrategy(),
-            };
+            cellUpdateContext.UpdateStrategy = cellUpdateStrategyFactory.CreateStrategy(RulePicker.Items[RulePicker.SelectedIndex]);
         }
     }
 }
