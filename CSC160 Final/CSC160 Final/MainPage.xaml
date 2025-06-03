@@ -24,7 +24,7 @@
                 SelectedIndexChanged="RulePicker_SelectedIndexChanged">
                 <Picker.Items>
                     <x:String>Conway’s Game of Life</x:String>
-                    <x:String>HighLife</x:String>
+                    <x:String>High Life</x:String>
                     <x:String>Day and Night</x:String>
                 </Picker.Items>
             </Picker>
